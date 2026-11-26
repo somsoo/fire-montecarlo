@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow" />
+  <title>10,000회 FIRE 은퇴 폭락장 스트레스 테스트</title>
+  <meta name="description" content="10,000회 몬테카를로 연산으로 은퇴 직후 대폭락(-30%/-40%)과 고물가 복합 위기 생존확률 및 안전 인출률을 진단합니다." />
+  <link rel="canonical" href="https://fire-montecarlo.enjoy-onepage.com/stress-test/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="10,000회 FIRE 은퇴 스트레스 테스트 &amp; 정밀 진단서" />
+  <meta property="og:description" content="은퇴 직후 대폭락(-30%/-40%) × 고물가(연 5%) 복합 위기 시나리오 생존확률 매트릭스 및 안전 인출률 진단" />
+  <meta property="og:url" content="https://fire-montecarlo.enjoy-onepage.com/stress-test/" />
+  <meta property="og:image" content="https://fire-montecarlo.enjoy-onepage.com/og-image.png" />
+  <meta property="og:locale" content="ko_KR" />
+  <link rel="icon" href="../favicon.ico" type="image/x-icon" />
+  <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
+  <script async crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2228289204702106"></script>
+  <link rel="stylesheet" href="../css/common.css" />
+  <style>
+    /* 4단계 심화 스트레스 테스트 전용 스타일 */
+    .top-nav-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .cond-summary-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      margin-bottom: 22px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .cond-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .cond-chip {
+      padding: 5px 11px;
+      border-radius: 999px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .cond-chip strong {
+      color: var(--text-primary);
+    }
+
+    /* 애드센스 오퍼월(보상형 광고) 잠금 게이트 & No-fill 폴백 UI */
+    .offerwall-gate {
+      position: relative;
+      padding: 32px 24px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      text-align: center;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    .offerwall-gate.is-hidden {
+      display: none;
+    }
+
+    .offerwall-badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: rgba(245, 158, 11, 0.18);
+      border: 1px solid #f59e0b;
+      color: #fbbf24;
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .offerwall-gate h2 {
+      margin: 0 0 10px;
+      font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+      font-weight: 800;
+    }
+
+    .offerwall-gate p {
+      margin: 0 auto 20px;
+      max-width: 640px;
+      color: #cbd5e1;
+      font-size: 0.92rem;
+    }
+
+    .offerwall-feature-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      max-width: 680px;
+      margin: 0 auto 24px;
+      text-align: left;
+    }
+
+    @media (max-width: 640px) {
+      .offerwall-feature-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .offerwall-feature-item {
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.07);
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      font-weight: 600;
+    }
+
+    .btn-reward-unlock {
+      background: #f59e0b;
+      color: #0f172a;
+      font-size: 1rem;
+      font-weight: 800;
+      padding: 14px 28px;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-reward-unlock:hover {
+      background: #fbbf24;
+    }
+
+    .btn-reward-unlock:disabled {
+      opacity: 0.65;
+      cursor: default;
+    }
+
+    /* 광고 No-fill / 차단 환경 대비 폴백 박스 */
+    .fallback-box {
+      display: none;
+      max-width: 560px;
+      margin: 18px auto 0;
+      padding: 16px 18px;
+      border-radius: var(--radius-md);
+      background: rgba(15, 23, 42, 0.78);
+      border: 1px solid rgba(96, 165, 250, 0.45);
+      text-align: left;
+    }
+
+    .fallback-box.is-visible {
+      display: block;
+    }
+
+    .fallback-progress-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .fallback-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: #60a5fa;
+      transition: width 0.2s linear;
+    }
+
+    /* 심화 리포트 본문 래퍼 */
+    .deep-report-wrap.is-locked {
+      display: none;
+    }
+
+    .report-section {
+      margin-bottom: 24px;
+    }
+
+    .section-subdesc {
+      margin: -8px 0 16px;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+
+    .kpi-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 820px) {
+      .kpi-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .kpi-grid-4 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .pdf-export-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 18px 20px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, #eff6ff 0%, #eef2ff 100%);
+      border: 1px solid #bfdbfe;
+    }
+
+    .worker-status-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.15);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div>
+        <h1 class="site-title">10,000회 FIRE 스트레스 테스트 &amp; 정밀 은퇴 진단</h1>
+        <p class="site-subtitle">대폭락(-30%/-40%) × 고물가(연 5%) 복합 시나리오 매트릭스 · 안전 인출률(3.0%~5.0%) 생존곡선</p>
+      </div>
+      <div>
+        <span class="worker-status-pill" id="workerStatusBadge">Web Worker 10,000회 준비 중...</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-container">
+        <!-- ADSENSE START: top -->
+    <div class="manual-ad-box ad-top-banner" style="width:100%;box-sizing:border-box;min-height:60px;max-height:90px;margin:12px auto;text-align:center;background:transparent;">
+      <ins class="adsbygoogle" style="display:block;height:60px;max-height:90px;" data-ad-client="ca-pub-2228289204702106" data-ad-slot="3824727725" data-ad-format="horizontal" data-full-width-responsive="false"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+    <!-- ADSENSE END: top -->
+
+    <!-- 상단 복귀 및 재검증 네비게이션 바 -->
+    <div class="top-nav-bar">
+      <a id="linkBackToMain" href="../" class="btn btn-outline">
+        &larr; 기본 시뮬레이터(조건 수정)로 돌아가기
+      </a>
+      <button type="button" id="btnRerun10k" class="btn btn-outline">
+        10,000회 난수 재검증
+      </button>
+    </div>
+
+    <!-- 현재 적용된 시뮬레이션 조건 요약 카드 -->
+    <section class="cond-summary-card" aria-labelledby="condSummaryTitle">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;">
+        <strong id="condSummaryTitle" style="font-size:0.98rem;">분석 대상 은퇴 설계 조건</strong>
+        <span id="condWorkerElapsed" style="font-size:0.8rem;color:var(--text-muted);">백그라운드 연산 대기 중</span>
+      </div>
+      <div id="condChipsContainer" class="cond-chips"></div>
+    </section>
+
+    <!-- 애드센스 오퍼월(보상형 광고) 잠금 게이트 & No-fill 폴백 UI -->
+    <section id="offerwallGateCard" class="offerwall-gate" aria-labelledby="offerwallTitle">
+      <span class="offerwall-badge">심화 스트레스 리포트 · 오퍼월 잠금 해제</span>
+      <h2 id="offerwallTitle">10,000회 정밀 스트레스 매트릭스 &amp; PDF 진단서 열람</h2>
+      <p>
+        짧은 스폰서 보상형 광고를 시청하면 Web Worker가 계산한 10,000회 정밀 시뮬레이션 리포트와
+        A4 은퇴 진단서 PDF 다운로드 기능이 현재 세션 동안 전면 개방됩니다.
+      </p>
+
+      <div class="offerwall-feature-list">
+        <div class="offerwall-feature-item">✓ 10,000회 정밀 몬테카를로 백분위수 궤적</div>
+        <div class="offerwall-feature-item">✓ 첫해 -30% / -40% 대폭락 × 연 5% 고물가 매트릭스</div>
+        <div class="offerwall-feature-item">✓ 안전 인출률(3.0% ~ 5.0%) 구간별 생존곡선 비교</div>
+        <div class="offerwall-feature-item">✓ 고해상도 A4 은퇴 생존 진단서 PDF 출력</div>
+      </div>
+
+      <button type="button" id="btnUnlockRewardAd" class="btn-reward-unlock">
+        보상형 광고 보고 정밀 리포트 열기
+      </button>
+
+      <!-- 광고 No-fill / 타임아웃 / 차단기 환경 폴백 안내 UI -->
+      <div id="offerwallFallbackBox" class="fallback-box" role="status" aria-live="polite">
+        <div id="offerwallFallbackText" style="font-size:0.86rem;color:#e2e8f0;font-weight:600;">
+          현재 표시 가능한 보상형 광고가 없어(No-fill) 무료 연산 프리뷰 모드로 전환되었습니다. 잠시 후 리포트가 자동 개방됩니다...
+        </div>
+        <div class="fallback-progress-track" aria-hidden="true">
+          <div id="offerwallFallbackBar" class="fallback-progress-fill"></div>
+        </div>
+        <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;">
+          <span id="offerwallCountdownLabel" style="font-size:0.78rem;color:#93c5fd;">남은 시간: 5초</span>
+          <button type="button" id="btnFallbackImmediateOpen" class="btn btn-outline" style="display:none;padding:6px 12px;font-size:0.8rem;">
+            지금 바로 리포트 열기
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 잠금 해제 후 표시되는 심화 리포트 본문 -->
+    <div id="deepReportContent" class="deep-report-wrap is-locked">
+      <!-- 섹션 1: 10,000회 정밀 요약 & 팬차트 -->
+      <section class="card report-section" aria-labelledby="sec10kTitle">
+        <div class="card-title">
+          <span id="sec10kTitle">1. 10,000회 정밀 몬테카를로 시뮬레이션 진단</span>
+          <span class="grade-badge grade-caution" id="stressMainGradeBadge">분석 중</span>
+        </div>
+        <p class="section-subdesc">
+          기본 2,000회 대비 표본 오차를 줄인 10,000회 정규분포 경로 분석 결과입니다(현재가치 환산 기준).
+        </p>
+
+        <div class="kpi-grid-4">
+          <div class="kpi-card">
+            <div class="kpi-label">평시 10,000회 생존확률</div>
+            <div class="kpi-value" id="stressKpiBaseRate">--.-%</div>
+            <div style="font-size:0.78rem;color:var(--text-muted);margin-top:4px;" id="stressKpiBaseSub">기본 물가 기준</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">첫해 -30% 폭락 생존확률</div>
+            <div class="kpi-value" id="stressKpiShock30Rate" style="color:var(--shock-color);">--.-%</div>
+            <div style="font-size:0.78rem;color:var(--text-muted);margin-top:4px;" id="stressKpiShock30Delta">평시 대비 변화</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">은퇴 시점 중앙값 자산 (P50)</div>
+            <div class="kpi-value" id="stressKpiRetireAsset">--</div>
+            <div style="font-size:0.78rem;color:var(--text-muted);margin-top:4px;" id="stressKpiInitWr">초기 인출률 --%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">하위 10% 악재 경로 (P10)</div>
+            <div class="kpi-value" id="stressKpiP10Status">--</div>
+            <div style="font-size:0.78rem;color:var(--text-muted);margin-top:4px;" id="stressKpiP10Sub">보수적 하방 점검</div>
+          </div>
+        </div>
+
+        <div class="chart-wrapper">
+          <canvas id="stressFanChartCanvas" aria-label="10,000회 정밀 백분위수 팬차트" role="img"></canvas>
+        </div>
+      </section>
+
+      <!-- 섹션 2: 대폭락(-30%/-40%) × 고물가(연 5%) 복합 스트레스 매트릭스 -->
+      <section class="card report-section" aria-labelledby="secMatrixTitle">
+        <div class="card-title">
+          <span id="secMatrixTitle">2. 은퇴 직후 대폭락(-30% / -40%) × 고물가(연 5%) 복합 매트릭스</span>
+        </div>
+        <p class="section-subdesc">
+          은퇴 첫해 증시 급락과 스태그플레이션(연 5% 이상 고물가 지속)이 동시에 겹치는 극단적 위기 상황에서의 생존율과 예상 고갈 연령입니다.
+        </p>
+
+        <div class="data-table-wrap">
+          <table class="data-table" aria-label="복합 스트레스 시나리오 매트릭스 비교표">
+            <thead>
+              <tr>
+                <th>복합 스트레스 시나리오</th>
+                <th>생존확률</th>
+                <th>등급</th>
+                <th>하위 10%(P10) 소진 연령</th>
+                <th>중앙값(P50) 소진 연령</th>
+                <th>기대수명 잔여자산(P50)</th>
+              </tr>
+            </thead>
+            <tbody id="stressMatrixTableBody">
+              <tr>
+                <td colspan="6" style="text-align:center;color:var(--text-muted);">10,000회 매트릭스를 계산하는 중입니다...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 섹션 3: 안전 인출률(3.0% ~ 5.0%) 구간별 생존곡선 비교 -->
+      <section class="card report-section" aria-labelledby="secWrCurveTitle">
+        <div class="card-title">
+          <span id="secWrCurveTitle">3. 안전 인출률(3.0% ~ 5.0%) 구간별 연령 생존곡선 비교</span>
+        </div>
+        <p class="section-subdesc">
+          은퇴 시점 예상 순자산(P50)을 기준으로 초기 인출률을 3.0%에서 5.0%까지 0.5%p 단위로 조정했을 때 연령별 포트폴리오 생존 유지 확률입니다.
+        </p>
+
+        <div class="chart-wrapper">
+          <canvas id="withdrawalCurveCanvas" aria-label="안전 인출률 3.0%~5.0% 연령별 생존곡선 차트" role="img"></canvas>
+        </div>
+
+        <div class="data-table-wrap" style="margin-top:18px;">
+          <table class="data-table" aria-label="인출률 구간별 월 가용 생활비 및 생존확률 표">
+            <thead>
+              <tr>
+                <th>초기 인출률</th>
+                <th>월 순인출 가능액 (현재가치)</th>
+                <th>고정수입 포함 월 총생활비</th>
+                <th>기대수명 최종 생존확률</th>
+                <th>안정성 판정</th>
+              </tr>
+            </thead>
+            <tbody id="withdrawalCurveTableBody">
+              <tr>
+                <td colspan="5" style="text-align:center;color:var(--text-muted);">인출률 생존곡선을 계산하는 중입니다...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 섹션 4: jsPDF 은퇴 생존 진단서 A4 PDF 출력 -->
+      <section class="pdf-export-bar" aria-label="은퇴 진단서 PDF 출력">
+        <div>
+          <strong style="font-size:1.05rem;color:var(--brand-primary);">내 FIRE 은퇴 생존 정밀 진단서 (A4 PDF 출력)</strong>
+          <div style="font-size:0.84rem;color:var(--text-secondary);margin-top:3px;">
+            10,000회 시뮬레이션 요약, 복합 스트레스 매트릭스, 안전 인출률 분석표를 고해상도 2페이지 PDF 문서로 저장합니다.
+          </div>
+          <label style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:0.83rem;font-weight:600;color:var(--text-primary);cursor:pointer;">
+            <input type="checkbox" id="togglePdfHideAmounts" />
+            <span>진단서 내 순자산·생활비 실금액 마스킹(비공개) 적용</span>
+          </label>
+        </div>
+        <div class="btn-row" style="align-items:center;">
+          <span id="pdfExportStatus" style="font-size:0.82rem;font-weight:700;color:var(--grade-safe);"></span>
+          <button type="button" id="btnExportPdfReport" class="btn btn-primary">
+            은퇴 진단서 PDF 다운로드
+          </button>
+        </div>
+      </section>
+    </div>
+
+        <!-- ADSENSE START: bottom -->
+    <div class="manual-ad-box ad-bottom-banner" style="width:100%;box-sizing:border-box;margin:24px auto;text-align:center;background:transparent;">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-2228289204702106" data-ad-slot="3416334507" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+    <!-- ADSENSE END: bottom -->
+
+    <footer class="site-footer">
+      <div>
+        본 정밀 스트레스 테스트 및 PDF 진단서는 입력된 수익률·변동성·물가 가정에 기반한 확률 시뮬레이션 참고 자료이며, 법정 연금·세금 자문이나 투자 권유가 아닙니다.
+      </div>
+      <nav class="footer-links" aria-label="하단 정책 안내">
+        <a href="../">메인 시뮬레이터</a>
+        <a href="../about.html">서비스 소개 및 문의</a>
+        <a href="../privacy.html">개인정보처리방침</a>
+        <a href="../terms.html">이용약관 및 면책공고</a>
+      </nav>
+    </footer>
+  </main>
+
+  <script src="../js/montecarlo-engine.js"></script>
+  <script src="../js/ui-core.js"></script>
+  <script src="../js/stress-test-app.js"></script>
+</body>
+</html>

@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow" />
+  <title>파이어족 몬테카를로 은퇴 생존확률 시뮬레이터</title>
+  <meta name="description" content="박스-뮬러 2,000회 몬테카를로 시뮬레이션으로 목표 은퇴 나이부터 기대수명까지의 자산 생존확률과 폭락장 위험을 즉시 계산합니다." />
+  <link rel="canonical" href="https://fire-montecarlo.enjoy-onepage.com/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="파이어족(FIRE) 몬테카를로 은퇴 생존확률 시뮬레이터" />
+  <meta property="og:description" content="단순 평균 복리 계산기가 놓치는 수익률 순서 위험까지 반영한 2,000회 몬테카를로 은퇴 자산 생존확률 시뮬레이터" />
+  <meta property="og:url" content="https://fire-montecarlo.enjoy-onepage.com/" />
+  <meta property="og:image" content="https://fire-montecarlo.enjoy-onepage.com/og-image.png" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="파이어족 몬테카를로 은퇴 생존확률 시뮬레이터" />
+  <meta name="twitter:description" content="박스-뮬러 2,000회 몬테카를로 시뮬레이션으로 은퇴 자산 생존확률과 첫해 폭락장 위험을 진단하세요." />
+  <meta name="twitter:image" content="https://fire-montecarlo.enjoy-onepage.com/og-image.png" />
+  <link rel="icon" href="./favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png" sizes="180x180" />
+  <link rel="alternate" type="application/rss+xml" title="파이어족 몬테카를로 은퇴 생존확률 시뮬레이터 RSS" href="https://fire-montecarlo.enjoy-onepage.com/rss.xml" />
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="https://fire-montecarlo.enjoy-onepage.com/sitemap.xml" />
+  <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
+  <script async crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2228289204702106"></script>
+  <meta name="kakao-js-key" content="" />
+  <link rel="stylesheet" href="./css/common.css" />
+  <style>
+    /* 2단계 메인 페이지 전용 보조 레이아웃 스타일 */
+    .header-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .header-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.14);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .shared-notice {
+      display: none;
+      margin-bottom: 18px;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e3a8a;
+      font-size: 0.88rem;
+      font-weight: 600;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .shared-notice.is-visible {
+      display: flex;
+    }
+
+    .section-divider-label {
+      margin: 16px 0 6px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border-strong);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* 생존확률 히어로 결과 상자 */
+    .hero-result-box {
+      padding: 20px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 1px solid var(--border-light);
+      margin-bottom: 18px;
+    }
+
+    .hero-top-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero-rate-group {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero-rate-number {
+      font-size: clamp(2.2rem, 4vw, 3rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+    }
+
+    .hero-progress-track {
+      width: 100%;
+      height: 12px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 14px 0 10px;
+    }
+
+    .hero-progress-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: var(--brand-secondary);
+      transition: width 0.25s ease, background-color 0.25s ease;
+    }
+
+    .hero-desc {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .shock-delta-box {
+      display: none;
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+      color: #9f1239;
+      font-size: 0.86rem;
+      font-weight: 600;
+    }
+
+    .shock-delta-box.is-visible {
+      display: block;
+    }
+
+    .kpi-sub {
+      margin-top: 4px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* 차트 헤더 컨트롤 */
+    .chart-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 20px;
+      margin-bottom: 6px;
+    }
+
+    .segmented-control {
+      display: inline-flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 2px;
+    }
+
+    .seg-btn {
+      border: none;
+      background: transparent;
+      padding: 5px 11px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .seg-btn.is-active {
+      background: #ffffff;
+      color: var(--brand-primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .meta-perf {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    /* 공유 & 심화 이동 바 */
+    .share-bar {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .inline-check {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .toast-feedback {
+      display: none;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--grade-safe);
+    }
+
+    .toast-feedback.is-visible {
+      display: inline-block;
+    }
+
+    .stress-cta-card {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: #ffffff;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .stress-cta-card h3 {
+      margin: 0 0 6px;
+      font-size: 1.08rem;
+      font-weight: 800;
+    }
+
+    .stress-cta-card p {
+      margin: 0;
+      font-size: 0.86rem;
+      color: #cbd5e1;
+    }
+
+    .btn-cta-gold {
+      background: #f59e0b;
+      color: #0f172a;
+      font-weight: 800;
+      border: none;
+      white-space: nowrap;
+    }
+
+    .btn-cta-gold:hover {
+      background: #fbbf24;
+      color: #0f172a;
+      text-decoration: none;
+    }
+
+    .mini-action-btn {
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: #ffffff;
+      color: var(--text-secondary);
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .mini-action-btn:hover {
+      border-color: var(--brand-secondary);
+      color: var(--brand-secondary);
+    }
+
+    /* 3단계: 9:16 인증샷 카드 & 카카오톡 바이럴 패널 */
+    .viral-card-panel {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: var(--radius-lg);
+      background: #f8fafc;
+      border: 1px solid var(--border-light);
+    }
+
+    .viral-grid {
+      display: grid;
+      grid-template-columns: 204px minmax(0, 1fr);
+      gap: 20px;
+      align-items: center;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 640px) {
+      .viral-grid {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+    }
+
+    .story-canvas-frame {
+      width: 204px;
+      aspect-ratio: 9 / 16;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      background: #0f172a;
+      border: 1px solid #334155;
+    }
+
+    .story-canvas-frame canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .caption-preview-box {
+      margin: 12px 0 14px;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      background: #ffffff;
+      border: 1px solid var(--border-strong);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+
+    .btn-kakao {
+      background: #fee500;
+      color: #191919;
+      border-color: #eab308;
+      font-weight: 800;
+    }
+
+    .btn-kakao:hover {
+      background: #fde047;
+      color: #191919;
+      text-decoration: none;
+    }
+
+    /* 5단계: 하단 퍼블리셔 해설 카드 및 FAQ 아코디언 스타일 */
+    .guide-article-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 28px 26px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .guide-callout {
+      margin: 16px 0;
+      padding: 16px 18px;
+      border-radius: var(--radius-md);
+      background: var(--bg-subtle);
+      border-left: 4px solid var(--brand-secondary);
+      font-size: 0.92rem;
+      color: var(--text-primary);
+    }
+
+    .faq-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .faq-item {
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      background: var(--bg-subtle);
+      padding: 14px 18px;
+    }
+
+    .faq-item summary {
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.98rem;
+      color: var(--text-primary);
+      list-style: none;
+    }
+
+    .faq-item summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-item p {
+      margin: 10px 0 0;
+      font-size: 0.93rem;
+      color: var(--text-secondary);
+    }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "파이어족(FIRE) 몬테카를로 은퇴 생존확률 시뮬레이터",
+        "url": "https://fire-montecarlo.enjoy-onepage.com/",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "All",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "KRW"
+        },
+        "description": "박스-뮬러 변환 정규난수 기반 2,000회 몬테카를로 시뮬레이션으로 목표 은퇴 나이부터 기대수명까지의 자산 생존확률과 수익률 순서 위험을 진단하는 로컬 웹 도구"
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "일반 복리 은퇴 계산기와 몬테카를로 시뮬레이터의 차이는 무엇인가요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "일반 복리 계산기는 매년 동일한 평균 수익률이 흔들림 없이 반복된다고 가정합니다. 반면 몬테카를로 시뮬레이터는 연간 변동성(표준편차)을 반영하여 수천 개의 무작위 상승·하락 경로를 생성하므로, 은퇴 초기에 하락장을 만났을 때 자산이 조기 고갈되는 수익률 순서 위험까지 정량적인 생존확률(%)로 보여줍니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "기대수익률이 물가상승률보다 높은데도 왜 자산이 고갈되는 시나리오가 나오나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "변동성이 존재하는 포트폴리오에서는 산술평균 수익률보다 실제 복리 성장률(기하평균)이 낮아지는 변동성 끌림 현상이 발생하며, 특히 자산 인출기에 큰 폭의 마이너스 수익률 구간을 겪으면 생활비 인출로 원금 자체가 줄어들어 이후 상승장이 와도 회복 탄력을 잃기 때문입니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "은퇴 첫해 -30% 폭락장 스트레스 테스트는 왜 확인해야 하나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "은퇴 설계에서 가장 치명적인 위험은 은퇴 직후 1~3년 사이에 발생하는 대형 약세장입니다. 은퇴 첫해에 -30% 충격을 강제로 부여해 생존확률 하락폭을 미리 점검하면, 현금 완충 자산 확보나 초기 인출률 조정 같은 실질적인 방어 계획을 세울 수 있습니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "공적연금이나 개인연금, 임대수입 등 은퇴 후 고정 수입은 어떻게 반영하나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "입력 패널의 은퇴 후 추가 고정수입(선택) 칸에 예상 월 고정 현금흐름을 현재가치 기준으로 입력하면 됩니다. 시뮬레이터는 은퇴 후 월 생활비에서 해당 고정수입을 차감한 순인출액만 포트폴리오에서 인출하는 것으로 계산합니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "입력한 내 자산 정보나 시뮬레이션 데이터가 외부 서버에 저장되나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "저장되지 않습니다. 모든 난수 생성과 자산 궤적 계산은 사용자의 기기 브라우저 내부 JavaScript 엔진에서만 실행되며, 외부 데이터베이스나 서버로 전송되지 않습니다. 편의를 위한 입력값 임시 보존은 브라우저 로컬 저장소(localStorage)에만 남습니다."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div>
+        <h1 class="site-title">파이어족(FIRE) 몬테카를로 은퇴 생존확률 시뮬레이터</h1>
+        <p class="site-subtitle">박스-뮬러 정규분포 2,000회 확률 시뮬레이션 · 은퇴 첫해 폭락장 스트레스 비교</p>
+      </div>
+      <div class="header-badges">
+        <span class="header-pill">100% 브라우저 로컬 연산</span>
+        <span class="header-pill" id="headerPerfBadge">2,000회 대기</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <!-- 공유 링크 진입 안내 배너 -->
+    <div id="sharedStateBanner" class="shared-notice" role="status" aria-live="polite">
+      <span id="sharedStateMessage">공유된 시뮬레이션 조건을 불러왔습니다. 슬라이더를 움직여 내 조건으로 바로 비교해 보세요.</span>
+      <button type="button" id="btnResetDefaultTop" class="mini-action-btn">기본값으로 초기화</button>
+    </div>
+
+        <!-- ADSENSE START: top -->
+    <div class="manual-ad-box ad-top-banner" style="width:100%;box-sizing:border-box;min-height:60px;max-height:90px;margin:12px auto;text-align:center;background:transparent;">
+      <ins class="adsbygoogle" style="display:block;height:60px;max-height:90px;" data-ad-client="ca-pub-2228289204702106" data-ad-slot="3824727725" data-ad-format="horizontal" data-full-width-responsive="false"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+    <!-- ADSENSE END: top -->
+
+    <div class="sim-grid">
+      <!-- 좌측: 입력 파라미터 패널 -->
+      <section class="card" aria-labelledby="inputPanelTitle">
+        <div class="card-title">
+          <span id="inputPanelTitle">시뮬레이션 조건 입력</span>
+          <button type="button" id="btnResetDefaults" class="mini-action-btn">초기화</button>
+        </div>
+
+        <!-- 포트폴리오 기대수익률·변동성 원클릭 프리셋 -->
+        <div class="preset-bar" role="group" aria-label="포트폴리오 성향 프리셋">
+          <button type="button" class="preset-btn" data-preset="conservative">
+            안정형<br /><small>수익 4.5% · 변동 6%</small>
+          </button>
+          <button type="button" class="preset-btn is-active" data-preset="balanced">
+            균형형 60:40<br /><small>수익 7.0% · 변동 12%</small>
+          </button>
+          <button type="button" class="preset-btn" data-preset="aggressive">
+            성장형 주식<br /><small>수익 9.0% · 변동 17.5%</small>
+          </button>
+        </div>
+
+        <form id="fireInputForm" onsubmit="return false;">
+          <div class="section-divider-label" style="margin-top:0;border-top:none;padding-top:0;">1. 자산 및 저축</div>
+
+          <div class="field-group">
+            <div class="field-header">
+              <label class="field-label" for="inputCurrentNetWorth">현재 순자산</label>
+              <span class="field-formatted" id="fmtCurrentNetWorth">3억 원</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" id="sliderCurrentNetWorth" min="0" max="500000" step="500" value="30000" aria-label="현재 순자산 슬라이더" />
+              <div class="num-input-wrap">
+                <input type="number" id="inputCurrentNetWorth" min="0" max="10000000" step="100" value="30000" />
+                <span class="num-unit">만원</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <div class="field-header">
+              <label class="field-label" for="inputMonthlySaving">은퇴 전 월 저축액</label>
+              <span class="field-formatted" id="fmtMonthlySaving">250만 원</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" id="sliderMonthlySaving" min="0" max="2000" step="10" value="250" aria-label="월 저축액 슬라이더" />
+              <div class="num-input-wrap">
+                <input type="number" id="inputMonthlySaving" min="0" max="100000" step="10" value="250" />
+                <span class="num-unit">만원</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-divider-label">2. 연령 및 은퇴 구간</div>
+
+          <div class="field-group">
+            <div class="field-header">
+              <label class="field-label" for="inputCurrentAge">현재 나이</label>
+              <span class="field-formatted" id="fmtCurrentAge">35세</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" id="sliderCurrentAge" min="18" max="80" step="1" value="35" aria-label="현재 나이 슬라이더" />
+              <div class="num-input-wrap">
+                <input type="number" id="inputCurrentAge" min="18" max="85" step="1" value="35" />
+                <span class="num-unit">세</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <div class="field-header">
+              <label class="field-label" for="inputRetireAge">목표 은퇴 나이</label>
+              <span class="field-formatted" id="fmtRetireAge">45세 (10년 후)</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" id="sliderRetireAge" min="20" max="85" step="1" value="45" aria-label="목표 은퇴 나이 슬라이더" />
+              <div class="num-input-wrap">
+                <input type="number" id="inputRetireAge" min="18" max="90" step="1" value="45" />
+                <span class="num-unit">세</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <div class="field-header">
+              <label class="field-label" for="inputTargetAge">목표 기대수명</label>
+              <span class="field-formatted" id="fmtTargetAge">90세 (은퇴기간 45년)</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" id="sliderTargetAge" min="55" max="105" step="1" value="90" aria-label="목표 기대수명 슬라이더" />
+              <div class="num-input-wrap">
+                <input type="number" id="inputTargetAge" min="50" max="110" step="1" value="90" />
+                <span class="num-unit">세</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-divider-label">3. 은퇴 후 지출 및 고정수입 (현재가치 기준)</div>
+
+          <div class="field-group">
+            <div class="field-header">
+              <label class="field-label" for="inputMonthlyExpense">은퇴 후 월 생활비 (현재가치)</label>
+              <span class="field-formatted" id="fmtMonthlyExpense">250만 원</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" id="sliderMonthlyExpense" min="50" max="1500" step="10" value="250" aria-label="은퇴 후 월 생활비 슬라이더" />
+              <div class="num-input-wrap">
+                <input type="number" id="inputMonthlyExpense" min="0" max="100000" step="10" value="250" />
+                <span class="num-unit">만원</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <div class="field-header">
+              <label class="field-label" for="inputMonthlyExtraIncome">은퇴 후 추가 고정수입 (선택)</label>
+              <span class="field-formatted" id="fmtMonthlyExtraIncome">0만 원</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" id="sliderMonthlyExtraIncome" min="0" max="1000" step="10" value="0" aria-label="은퇴 후 추가 고정수입 슬라이더" />
+              <div class="num-input-wrap">
+                <input type="number" id="inputMonthlyExtraIncome" min="0" max="100000" step="10" value="0" />
+                <span class="num-unit">만원</span>
+              </div>
+            </div>
+            <p class="field-hint">개인연금·임대·반퇴 소득 등 월 예상 고정 현금흐름이 있다면 자유 입력 (순인출액에서 차감)</p>
+          </div>
+
+          <div class="section-divider-label">4. 시장 수익률 · 변동성 · 물가</div>
+
+          <div class="field-group">
+            <div class="field-header">
+              <label class="field-label" for="inputExpectedReturn">포트폴리오 연 기대수익률 (명목)</label>
+              <span class="field-formatted" id="fmtExpectedReturn">7.0%</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" id="sliderExpectedReturn" min="0" max="15" step="0.1" value="7.0" aria-label="연 기대수익률 슬라이더" />
+              <div class="num-input-wrap">
+                <input type="number" id="inputExpectedReturn" min="-10" max="30" step="0.1" value="7.0" />
+                <span class="num-unit">%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <div class="field-header">
+              <label class="field-label" for="inputVolatility">연간 변동성 (표준편차)</label>
+              <span class="field-formatted" id="fmtVolatility">12.0%</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" id="sliderVolatility" min="0" max="35" step="0.5" value="12.0" aria-label="연간 변동성 슬라이더" />
+              <div class="num-input-wrap">
+                <input type="number" id="inputVolatility" min="0" max="60" step="0.5" value="12.0" />
+                <span class="num-unit">%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <div class="field-header">
+              <label class="field-label" for="inputInflation">예상 물가상승률</label>
+              <span class="field-formatted" id="fmtInflation">2.5%</span>
+            </div>
+            <div class="slider-row">
+              <input type="range" id="sliderInflation" min="0" max="8" step="0.1" value="2.5" aria-label="예상 물가상승률 슬라이더" />
+              <div class="num-input-wrap">
+                <input type="number" id="inputInflation" min="-2" max="20" step="0.1" value="2.5" />
+                <span class="num-unit">%</span>
+              </div>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <!-- 우측: 시뮬레이션 요약 · 폭락장 토글 · 팬차트 · 공유 패널 -->
+      <section class="card" aria-labelledby="resultPanelTitle">
+        <div class="card-title">
+          <span id="resultPanelTitle">몬테카를로 은퇴 생존확률 진단</span>
+          <button type="button" id="btnReseedRandom" class="mini-action-btn" title="새로운 2,000개 시장 난수 경로로 다시 추첨합니다">
+            난수 재추첨
+          </button>
+        </div>
+
+        <!-- 히어로 생존확률 게이지 -->
+        <div class="hero-result-box">
+          <div class="hero-top-row">
+            <div class="hero-rate-group">
+              <span class="hero-rate-number" id="kpiSurvivalRate">--.-%</span>
+              <span class="grade-badge grade-caution" id="kpiGradeBadge">계산 중</span>
+            </div>
+            <span class="meta-perf" id="kpiSimCountMeta">2,000회 시뮬레이션 기준</span>
+          </div>
+          <div class="hero-progress-track" aria-hidden="true">
+            <div class="hero-progress-bar" id="kpiSurvivalBar"></div>
+          </div>
+          <p class="hero-desc" id="kpiGradeDesc">입력된 조건으로 2,000개의 무작위 시장 경로를 시뮬레이션합니다.</p>
+          <div id="shockComparisonBanner" class="shock-delta-box" role="status" aria-live="polite"></div>
+        </div>
+
+        <!-- 핵심 KPI 카드 3종 -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">은퇴 시점 예상 자산 (P50)</div>
+            <div class="kpi-value" id="kpiRetireMedian">--</div>
+            <div class="kpi-sub" id="kpiRetireMedianSub">현재가치 환산 기준</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">은퇴 첫해 초기 인출률</div>
+            <div class="kpi-value" id="kpiWithdrawalRate">--%</div>
+            <div class="kpi-sub" id="kpiWithdrawalSub">월 순인출액 기준</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">기대수명 시점 중앙값 (P50)</div>
+            <div class="kpi-value" id="kpiFinalMedian">--</div>
+            <div class="kpi-sub" id="kpiDepletionSub">자산 유지 상태</div>
+          </div>
+        </div>
+
+        <!-- 인터랙티브 토글: 은퇴 첫해 -30% 폭락장 스트레스 테스트 -->
+        <div class="toggle-banner">
+          <div>
+            <strong style="font-size:0.94rem;color:#881337;">은퇴 첫해 -30% 폭락장 스트레스 테스트</strong>
+            <div style="font-size:0.8rem;color:#9f1239;margin-top:2px;">
+              은퇴 직후 첫해에 -30% 하락장을 겪을 때 생존확률과 중앙값 궤적(붉은 점선)을 즉시 비교합니다.
+            </div>
+          </div>
+          <label class="toggle-switch" aria-label="은퇴 첫해 -30% 폭락장 스트레스 테스트 토글">
+            <input type="checkbox" id="toggleFirstYearShock" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <!-- 백분위수 팬차트 -->
+        <div class="chart-toolbar">
+          <strong style="font-size:0.95rem;">연령별 자산 백분위수 궤적 (P10 ~ P90 팬차트)</strong>
+          <div class="segmented-control" role="group" aria-label="화폐 가치 기준 전환">
+            <button type="button" class="seg-btn is-active" id="btnViewReal" data-valuation="real">현재가치(실질)</button>
+            <button type="button" class="seg-btn" id="btnViewNominal" data-valuation="nominal">명목가치(미래)</button>
+          </div>
+        </div>
+
+        <div class="chart-wrapper">
+          <canvas id="fanChartCanvas" aria-label="연령별 백분위수 자산 궤적 팬차트" role="img"></canvas>
+        </div>
+
+        <!-- 주요 연령 구간별 백분위수 요약 테이블 -->
+        <div class="data-table-wrap" style="margin-top:18px;">
+          <table class="data-table" aria-label="연령대별 백분위수 자산 요약표">
+            <thead>
+              <tr>
+                <th>구간 연령</th>
+                <th>하위 10% (P10)</th>
+                <th>하위 25% (P25)</th>
+                <th>중앙값 (P50)</th>
+                <th>상위 25% (P75)</th>
+                <th>상위 10% (P90)</th>
+              </tr>
+            </thead>
+            <tbody id="milestoneTableBody">
+              <tr>
+                <td colspan="6" style="text-align:center;color:var(--text-muted);">연산 결과를 불러오는 중입니다...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- URL 해시 상태 공유 바 (자산 총액 숨김 공유 지원) -->
+        <div class="share-bar" id="shareActionArea">
+          <label class="inline-check" for="toggleHideAmountsShare">
+            <input type="checkbox" id="toggleHideAmountsShare" />
+            <span>내 순자산·생활비 금액 숨기고 비율(인출률·은퇴나이)만 공유</span>
+          </label>
+          <div class="btn-row" style="align-items:center;">
+            <span id="copyToastMsg" class="toast-feedback" role="status" aria-live="polite">링크가 복사되었습니다!</span>
+            <button type="button" id="btnCopyShareUrl" class="btn btn-outline">
+              시뮬레이션 결과 링크 복사
+            </button>
+          </div>
+        </div>
+
+        <!-- 3단계: 9:16 인스타 스토리·쓰레드 인증샷 카드 & 카카오톡 공유 -->
+        <div id="viralShareSlot" class="viral-card-panel" data-stage-slot="stage3">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;">
+            <div>
+              <strong style="font-size:1rem;color:var(--text-primary);">9:16 은퇴 생존확률 등급 인증샷 &amp; 카카오톡 공유</strong>
+              <div style="font-size:0.8rem;color:var(--text-muted);margin-top:2px;">
+                인스타 스토리·쓰레드 최적화 해상도(1080×1920)로 내 등급 카드를 저장하거나 공유하세요.
+              </div>
+            </div>
+            <label class="inline-check" for="toggleCardHideAmounts">
+              <input type="checkbox" id="toggleCardHideAmounts" checked />
+              <span>자산 총액 숨김 (비율·등급만 표시)</span>
+            </label>
+          </div>
+
+          <div class="viral-grid">
+            <div class="story-canvas-frame">
+              <canvas id="storyCardPreviewCanvas" width="1080" height="1920" aria-label="9:16 은퇴 생존확률 등급 인증샷 미리보기"></canvas>
+            </div>
+            <div style="width:100%;">
+              <div style="font-size:0.78rem;font-weight:700;color:var(--text-muted);">쓰레드 · SNS 공유 요약 문구 미리보기</div>
+              <div id="viralCaptionPreview" class="caption-preview-box">
+                FIRE 생존확률 계산 중...
+              </div>
+              <div class="btn-row">
+                <button type="button" id="btnDownloadStoryPng" class="btn btn-primary">
+                  9:16 인증샷 PNG 저장
+                </button>
+                <button type="button" id="btnWebShareStory" class="btn btn-outline">
+                  인스타 · 쓰레드 공유
+                </button>
+                <button type="button" id="btnCopyStoryCaption" class="btn btn-outline">
+                  인증 문구 복사
+                </button>
+                <button type="button" id="btnKakaoShare" class="btn btn-kakao">
+                  카카오톡 공유
+                </button>
+              </div>
+              <div style="margin-top:10px;min-height:20px;">
+                <span id="viralStatusFeedback" class="toast-feedback" role="status" aria-live="polite"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4단계 심화 경로(/kr/fire-montecarlo/stress-test/) 이동 CTA -->
+        <div class="stress-cta-card">
+          <div>
+            <h3>10,000회 정밀 스트레스 매트릭스 &amp; 은퇴 진단서 PDF</h3>
+            <p>대폭락(-30%/-40%) × 고물가(연 5%) 복합 시나리오와 3.0%~5.0% 인출률별 생존곡선을 정밀 검증하세요.</p>
+          </div>
+          <a id="linkStressTestPage" href="./stress-test/" class="btn btn-cta-gold">
+            심화 스트레스 테스트 열기 &rarr;
+          </a>
+        </div>
+      </section>
+    </div>
+
+        <!-- ADSENSE START: mid -->
+    <div class="manual-ad-box ad-mid-banner" style="width:100%;box-sizing:border-box;margin:20px auto;text-align:center;background:transparent;">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-2228289204702106" data-ad-slot="1186914926" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+    <!-- ADSENSE END: mid -->
+
+    <!-- 5단계: 하단 퍼블리셔 해설 레이어 (900단어 이상 고유 에버그린 가이드 & FAQ) -->
+    <section id="publisherGuideSlot" class="publisher-guide" data-stage-slot="stage5" aria-labelledby="guideMainHeading">
+      <article class="guide-article-card">
+        <h2 id="guideMainHeading" style="margin-top:0;">파이어족(FIRE) 은퇴 설계와 몬테카를로 시뮬레이션 완벽 가이드</h2>
+        <p>
+          조기 은퇴(FIRE, Financial Independence, Retire Early)나 장기 노후 자금을 계획할 때 가장 흔히 범하는 실수는
+          매년 일정한 수익률이 반복된다고 가정하는 단순 복리 계산기만으로 은퇴 시점을 결정하는 것입니다.
+          실제 금융 시장은 매년 기대수익률 근처에서 직선으로 움직이지 않으며, 큰 폭의 상승장과 하락장이 불규칙한 순서로 교차합니다.
+          이 가이드는 단순 평균 수익률 계산이 왜 위험한지 수학적 원리로 살펴보고, 박스-뮬러(Box-Muller) 변환 기반 몬테카를로 시뮬레이션 결과를
+          어떻게 읽고 실제 은퇴 전략에 활용해야 하는지 단계별로 정리합니다.
+        </p>
+
+        <h2>1. 평균 수익률 복리 계산기의 함정: 수익률 순서 위험(Sequence of Returns Risk)</h2>
+        <p>
+          자산을 모으기만 하고 인출하지 않는 거치식 투자 기간에는 연도별 수익률의 순서가 바뀌어도 최종 자산이 완전히 동일합니다.
+          예를 들어 원금에 3년간 <code>+25%</code>, <code>+8%</code>, <code>-15%</code>의 수익률이 발생하든,
+          반대 순서인 <code>-15%</code>, <code>+8%</code>, <code>+25%</code>로 발생하든 곱셈의 교환법칙에 의해
+          3년 누적 배수는 <code>1.25 × 1.08 × 0.85 = 1.1475</code>로 정확히 같습니다.
+        </p>
+        <p>
+          그러나 매달 혹은 매년 생활비를 빼서 써야 하는 <strong>은퇴 인출기(Decumulation Phase)</strong>에 들어서면 곱셈의 대칭성이 깨집니다.
+          은퇴 직후 초기에 큰 하락장을 먼저 만나면, 이미 줄어든 계좌에서 고정된 생활비를 인출해야 하므로 보유 자산의 좌수(원금 기반) 자체가 급격히 깎여 나갑니다.
+          이를 재무설계학에서는 <strong>수익률 순서 위험(Sequence of Returns Risk)</strong>이라고 부릅니다.
+        </p>
+
+        <div class="data-table-wrap" style="margin:14px 0;">
+          <table class="data-table" aria-label="수익률 순서 위험 산술 비교 예시">
+            <thead>
+              <tr>
+                <th>구분 (초기 자산 5억 원 · 연초 2,500만 원 인출 가정)</th>
+                <th>1년 차 종료 잔액</th>
+                <th>2년 차 종료 잔액</th>
+                <th>3년 차 종료 잔액</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>경로 A (상승 먼저: +25% → +8% → -15%)</strong></td>
+                <td>5억 9,375만 원</td>
+                <td>6억 1,425만 원</td>
+                <td><strong>5억 86만 원</strong></td>
+              </tr>
+              <tr>
+                <td><strong>경로 B (하락 먼저: -15% → +8% → +25%)</strong></td>
+                <td>4억 375만 원</td>
+                <td>4억 905만 원</td>
+                <td><strong>4억 8,006만 원</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          위 산술 비교에서 두 경로의 3년 산술평균 수익률은 연 <code>+6.0%</code>로 똑같고 기하평균 수익률도 동일합니다.
+          하지만 은퇴 첫해에 <code>-15%</code> 하락을 먼저 겪은 경로 B는 불과 3년 만에 경로 A보다 잔액이 2,080만 원이나 적게 남습니다.
+          만약 하락 폭이 <code>-30%</code> 이상이거나 고물가로 인해 인출 금액까지 매년 불어난다면, 초기 손실로 훼손된 원금은 이후 강세장이 찾아와도 회복 임계점을 넘지 못하고 기대수명 이전에 소진될 수 있습니다.
+          본 시뮬레이터 우측 상단의 <strong>‘은퇴 첫해 -30% 폭락장 스트레스 테스트’</strong> 스위치는 바로 이 초기 충격이 내 은퇴 계획의 생존확률을 몇 %포인트나 떨어뜨리는지 즉시 검증하기 위해 설계되었습니다.
+        </p>
+
+        <h2>2. 몬테카를로 시뮬레이션과 초기 인출률(4% 룰)의 작동 원리</h2>
+        <p>
+          몬테카를로(Monte Carlo) 시뮬레이션은 하나의 고정된 미래 대신 확률분포를 따르는 수천 개의 가상 시장 경로를 생성하여 결과를 집계하는 통계 기법입니다.
+          이 도구의 수학 엔진은 브라우저 내부에서 균등난수 두 개를 조합해 독립적인 표준정규분포 난수(평균 0, 표준편차 1)를 얻는
+          <strong>박스-뮬러 변환(Box-Muller Transform)</strong> 공식을 사용합니다.
+        </p>
+        <div class="guide-callout">
+          <strong>실제 코드가 매 연도마다 수행하는 점화식 요약</strong><br />
+          • <strong>은퇴 전 축적기</strong>: 매년 기존 순자산에 무작위 연간 수익률(<code>기대수익률 + 변동성 × 정규난수</code>)을 반영하고 연간 저축액을 더합니다.<br />
+          • <strong>은퇴 후 인출기</strong>: 매년 물가상승률만큼 증액된 순인출액(<code>월 생활비 - 추가 고정수입</code>의 연간 합계)을 먼저 차감한 뒤 남은 잔액에 해당 연도의 무작위 수익률을 적용합니다.<br />
+          • <strong>생존확률 판정</strong>: 기본 2,000회(심화 모드 10,000회)의 독립 시뮬레이션 중 목표 기대수명 시점까지 자산 잔액이 0원 이하로 고갈되지 않고 끝까지 살아남은 회차의 비율(%)을 산출합니다.
+        </div>
+        <p>
+          흔히 파이어족 사이에서 회자되는 <strong>‘4% 룰(초기 안전 인출률)’</strong>은 은퇴 시점 자산의 4%(즉 월 생활비의 300배, 연간 지출의 25배)를 첫해에 인출하고 이후 물가상승률만큼 인출액을 늘려 나가도 약 30년간 자산이 유지될 가능성이 높다는 경험 법칙입니다.
+          그러나 40대에 조기 은퇴하여 90세 이상까지 <strong>45년~50년 동안 인출기</strong>를 버텨야 하는 파이어족에게는 30년 기준의 4% 인출률이 생각보다 공격적일 수 있습니다.
+          은퇴 기간이 길어질수록 극단적인 약세장 구간과 마주칠 확률이 높아지므로, 차트의 중앙값(P50)뿐만 아니라 하위 25%(P25)와 하위 10%(P10) 곡선이 기대수명 전에 바닥에 닿지 않는지 함께 살펴보는 것이 안전합니다.
+        </p>
+
+        <h2>3. 포트폴리오별 기대수익률 · 연간 변동성 · 물가상승률 입력 가이드</h2>
+        <p>
+          몬테카를로 시뮬레이션의 신뢰도는 사용자가 입력하는 세 가지 시장 변수인 <strong>연 기대수익률(명목)</strong>, <strong>연간 변동성(표준편차)</strong>, <strong>예상 물가상승률</strong>의 균형에 달려 있습니다.
+          기대수익률만 높게 적고 변동성을 비현실적으로 낮게 설정하면 생존확률이 과대평가되는 착시가 나타납니다.
+          일반적으로 기대수익률이 높은 성장 자산일수록 연간 표준편차 역시 함께 커지며, 변동성이 커질수록 실제 장기 복리 수익률은 산술 기대수익률에서 분산의 절반 정도가 깎이는 <strong>변동성 끌림(Volatility Drag)</strong> 영향을 받습니다.
+        </p>
+        <ul>
+          <li><strong>안정형 배분 (예금·단기채·중기채 위주)</strong>: 연 변동성을 5%~7% 수준으로 낮출 수 있어 단기 원금 방어에는 유리하지만, 기대수익률이 물가상승률과 큰 차이가 나지 않으면 40년 이상의 장기 은퇴 구간에서 인플레이션으로 인해 실질 구매력이 서서히 잠식될 수 있습니다.</li>
+          <li><strong>균형형 배분 (글로벌 주식·채권 혼합형)</strong>: 중장기 성장성과 하락장 완충력을 함께 추구하는 형태로, 본 도구의 기본 프리셋(기대수익률 7.0%, 연간 변동성 12.0%)이 이 성향을 가정한 참고점입니다.</li>
+          <li><strong>성장형 배분 (주식 비중이 높은 공격형)</strong>: 장기 중앙값(P50)과 상위 궤적(P75·P90) 자산은 가장 크게 불어날 수 있으나, 연간 변동성이 16%~20% 이상으로 넓어지면서 하위 10%(P10) 불황 경로에서의 초기 원금 훼손 위험도 함께 커집니다.</li>
+          <li><strong>예상 물가상승률 설정 팁</strong>: 은퇴 후 월 생활비는 오늘 화폐가치(현재가치)로 입력하되, 물가상승률을 평시 가정(예: 2.0%~3.0%)에서 보수적 가정(예: 3.5%~5.0%)으로 높여 보면서 내 포트폴리오가 인플레이션 충격을 얼마나 견디는지 비교해 보시기 바랍니다.</li>
+        </ul>
+
+        <h2>4. 은퇴 생존확률을 높이는 3대 핵심 레버</h2>
+        <p>
+          시뮬레이션 결과 생존확률이 목표 기준(예: 85%~90% 이상)에 못 미치거나 첫해 폭락장 테스트에서 급격히 무너진다면, 다음 세 가지 조정 레버의 민감도를 직접 슬라이더로 테스트해 볼 수 있습니다.
+        </p>
+        <h3>① 목표 은퇴 시점 1~2년 조정의 이중 효과</h3>
+        <p>
+          목표 은퇴 나이를 1~2년 늦추면 단순히 저축을 1~2년 더 하는 것에 그치지 않습니다.
+          축적기 복리 운용 기간이 늘어나는 동시에 자산을 꺼내 써야 하는 인출 총연수가 그만큼 줄어들기 때문에, 초기 인출률이 낮아지고 생존확률이 비선형적으로 크게 상승하는 경우가 많습니다.
+        </p>
+        <h3>② 초기 인출률 낮추기 및 유연 인출(반퇴·고정 현금흐름 결합)</h3>
+        <p>
+          은퇴 후 매달 포트폴리오에서 꺼내야 하는 순인출액을 줄이는 것은 가장 확실한 방어 수단입니다.
+          고정비 구조를 다이어트하거나, 은퇴 초기 몇 년간 가벼운 소일거리·프리랜서 활동·임대 및 연금 현금흐름(바리스타 파이어·코스트 파이어 전략)을 ‘은퇴 후 추가 고정수입’ 칸에 반영해 보면 포트폴리오 인출 압력이 얼마나 줄어드는지 즉시 확인할 수 있습니다.
+        </p>
+        <h3>③ 은퇴 직후 현금성 완충 버퍼(Cash Cushion) 운용</h3>
+        <p>
+          수익률 순서 위험은 은퇴 직후 초기 하락장에서 주식을 헐값에 팔아 생활비를 충당할 때 발생합니다.
+          은퇴 시점에 2~3년치 필수 생활비를 변동성이 거의 없는 현금성 자산으로 별도 분리해 두고, 시장이 급락한 해에는 위험자산을 매도하지 않고 현금 버퍼에서 생활비를 꺼내 쓰는 규칙을 병행하면 실제 체감 생존율을 한층 높일 수 있습니다.
+        </p>
+
+        <h2>5. 자주 묻는 질문 (FAQ)</h2>
+        <div class="faq-list">
+          <details class="faq-item" open>
+            <summary>Q1. 일반 복리 은퇴 계산기와 몬테카를로 시뮬레이터의 차이는 무엇인가요?</summary>
+            <p>
+              일반 복리 계산기는 매년 동일한 평균 수익률이 오차 없이 반복된다고 계산하므로 시장 하락기 리스크를 전혀 보여주지 못합니다.
+              반면 몬테카를로 시뮬레이터는 연간 변동성(표준편차)을 이용해 매해 다른 무작위 수익률 경로 2,000개(심화 모드 10,000개)를 실험하므로,
+              은퇴 초기에 약세장을 만났을 때 자산이 고갈되는 확률까지 현실적으로 진단할 수 있습니다.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary>Q2. 기대수익률이 물가상승률보다 높은데도 왜 자산이 고갈되는 시나리오가 나오나요?</summary>
+            <p>
+              수익률이 위아래로 흔들리는 변동성 환경에서는 산술평균 수익률보다 실제 복리 성장률(기하평균)이 낮아집니다.
+              게다가 은퇴 후 매년 물가상승률만큼 불어나는 생활비를 인출하는 도중에 연속 하락장을 겪으면 원금이 임계치 아래로 줄어들어,
+              뒤늦게 높은 수익률이 와도 인출 속도를 따라잡지 못하고 소진되는 경로가 발생하기 때문입니다.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary>Q3. ‘은퇴 첫해 -30% 폭락장 스트레스 테스트’는 왜 꼭 확인해야 하나요?</summary>
+            <p>
+              은퇴 기간 중 가장 치명적인 구간은 자산 규모가 가장 크고 남은 인출 기간이 가장 긴 은퇴 직후 1~3년입니다.
+              은퇴 첫해에 -30% 하락을 강제로 가정했을 때도 생존확률이 양호하게 유지된다면 시장 타이밍 불운에도 흔들리지 않는 견고한 은퇴 계획이라고 볼 수 있습니다.
+              더 가혹한 -40% 대폭락과 연 5% 고물가 복합 충격은 상단 버튼을 통해 이동하는 심화 스트레스 테스트 페이지에서 10,000회 기준으로 점검할 수 있습니다.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary>Q4. 공적연금이나 개인연금, 임대수입 등 은퇴 후 고정 수입은 어떻게 반영하나요?</summary>
+            <p>
+              좌측 입력 패널의 ‘은퇴 후 추가 고정수입(선택)’ 항목에 예상되는 월평균 고정 현금흐름을 오늘 화폐가치(현재가치) 기준으로 입력하시면 됩니다.
+              시뮬레이터는 은퇴 후 월 생활비에서 해당 추가 고정수입을 먼저 차감한 순인출액만 금융 포트폴리오에서 인출하도록 계산합니다.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary>Q5. 입력한 내 자산 정보나 시뮬레이션 데이터가 외부 서버에 저장되나요?</summary>
+            <p>
+              일체 외부 서버로 전송되거나 저장되지 않습니다. 모든 난수 생성, 백분위수 계산, 9:16 인증샷 이미지 생성, PDF 진단서 출력은
+              오직 사용자의 스마트폰·PC 웹 브라우저 내부에서만 로컬로 실행됩니다.
+              또한 인증샷과 링크를 공유할 때 ‘자산 총액 숨김’ 옵션을 켜면 실제 순자산과 생활비 금액을 노출하지 않고 생존확률 등급과 인출률 비율만 안전하게 공유할 수 있습니다.
+            </p>
+          </details>
+        </div>
+      </article>
+    </section>
+
+        <!-- ADSENSE START: bottom -->
+    <div class="manual-ad-box ad-bottom-banner" style="width:100%;box-sizing:border-box;margin:24px auto;text-align:center;background:transparent;">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-2228289204702106" data-ad-slot="3416334507" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+    <!-- ADSENSE END: bottom -->
+
+    <footer class="site-footer">
+      <div>
+        본 시뮬레이터의 결과는 입력된 통계 가정에 따른 확률적 추정치이며, 특정 금융상품 권유나 미래 수익 보장을 의미하지 않습니다. 모든 연산은 브라우저 내부에서만 처리됩니다.
+      </div>
+      <nav class="footer-links" aria-label="하단 정책 안내">
+        <a href="./about.html">서비스 소개 및 문의</a>
+        <a href="./privacy.html">개인정보처리방침</a>
+        <a href="./terms.html">이용약관 및 면책공고</a>
+      </nav>
+    </footer>
+  </main>
+
+  <script src="./js/montecarlo-engine.js"></script>
+  <script src="./js/ui-core.js"></script>
+  <script src="./js/main-app.js"></script>
+  <script src="./js/viral-share.js"></script>
+</body>
+</html>

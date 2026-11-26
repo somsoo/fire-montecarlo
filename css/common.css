@@ -1,0 +1,614 @@
+/* ==========================================================================
+   파이어족(FIRE) 몬테카를로 은퇴 생존확률 시뮬레이터 — 공용 디자인 시스템 (common.css)
+   에버그린 · CLS 방지 · 반응형 금융 대시보드 스타일
+   ========================================================================== */
+
+:root {
+  --bg-page: #f4f6fb;
+  --bg-surface: #ffffff;
+  --bg-subtle: #f8fafc;
+  --bg-accent-soft: #eef2ff;
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+
+  --border-light: #e2e8f0;
+  --border-strong: #cbd5e1;
+
+  --brand-primary: #1e3a8a;
+  --brand-secondary: #2563eb;
+  --brand-hover: #1d4ed8;
+
+  /* 생존확률 4등급 시맨틱 컬러 */
+  --grade-safe: #059669;
+  --grade-safe-bg: #ecfdf5;
+  --grade-safe-border: #a7f3d0;
+
+  --grade-moderate: #2563eb;
+  --grade-moderate-bg: #eff6ff;
+  --grade-moderate-border: #bfdbfe;
+
+  --grade-caution: #d97706;
+  --grade-caution-bg: #fffbeb;
+  --grade-caution-border: #fde68a;
+
+  --grade-risk: #dc2626;
+  --grade-risk-bg: #fef2f2;
+  --grade-risk-border: #fecaca;
+
+  --shock-color: #e11d48;
+  --shock-bg: #fff1f2;
+  --shock-border: #fecdd3;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 6px 20px rgba(15, 23, 42, 0.07);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.6;
+  word-break: keep-all;
+}
+
+a {
+  color: var(--brand-secondary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* 레이아웃 컨테이너 */
+.app-container {
+  width: 100%;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+
+.site-header {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+  color: #ffffff;
+  padding: 28px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.site-header-inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.site-title {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.site-subtitle {
+  margin: 6px 0 0;
+  font-size: 0.95rem;
+  color: #cbd5e1;
+}
+
+/* 시뮬레이터 메인 2단 그리드 */
+.sim-grid {
+  display: grid;
+  grid-template-columns: 400px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .sim-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 공통 카드 */
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  box-shadow: var(--shadow-sm);
+}
+
+.card-title {
+  margin: 0 0 16px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* 포트폴리오 프리셋 버튼 바 */
+.preset-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.preset-btn {
+  padding: 9px 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.preset-btn:hover {
+  border-color: var(--brand-secondary);
+  color: var(--brand-secondary);
+}
+
+.preset-btn.is-active {
+  background: var(--bg-accent-soft);
+  border-color: var(--brand-secondary);
+  color: var(--brand-primary);
+  font-weight: 700;
+}
+
+/* 입력 필드 & 슬라이더 */
+.field-group {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.field-group:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.field-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+  gap: 8px;
+}
+
+.field-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.field-formatted {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--brand-secondary);
+}
+
+.slider-row {
+  display: grid;
+  grid-template-columns: 1fr 112px;
+  gap: 12px;
+  align-items: center;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: #dbeafe;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--brand-secondary);
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.3);
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--brand-secondary);
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.3);
+  cursor: pointer;
+}
+
+.num-input-wrap {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  padding: 0 8px;
+  height: 36px;
+}
+
+.num-input-wrap:focus-within {
+  border-color: var(--brand-secondary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+}
+
+.num-input-wrap input[type="number"] {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: right;
+  color: var(--text-primary);
+  background: transparent;
+  font-family: inherit;
+}
+
+.num-unit {
+  margin-left: 4px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.field-hint {
+  margin: 4px 0 0;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+/* 토글 스위치 (스트레스 테스트 · 자산 숨김) */
+.toggle-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--shock-border);
+  background: var(--shock-bg);
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  background-color: #cbd5e1;
+  border-radius: 999px;
+  transition: background-color 0.2s ease;
+}
+
+.toggle-slider::before {
+  content: "";
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background-color: var(--shock-color);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(22px);
+}
+
+/* KPI 요약 카드 & 등급 배지 */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 640px) {
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.kpi-card {
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+}
+
+.kpi-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.kpi-value {
+  margin-top: 4px;
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.grade-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.grade-safe {
+  color: var(--grade-safe);
+  background: var(--grade-safe-bg);
+  border-color: var(--grade-safe-border);
+}
+
+.grade-moderate {
+  color: var(--grade-moderate);
+  background: var(--grade-moderate-bg);
+  border-color: var(--grade-moderate-border);
+}
+
+.grade-caution {
+  color: var(--grade-caution);
+  background: var(--grade-caution-bg);
+  border-color: var(--grade-caution-border);
+}
+
+.grade-risk {
+  color: var(--grade-risk);
+  background: var(--grade-risk-bg);
+  border-color: var(--grade-risk-border);
+}
+
+/* Chart.js 팬차트 고정 높이 래퍼 (CLS 및 무한 리사이즈 방지) */
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+  height: 360px;
+  margin-top: 12px;
+}
+
+@media (max-width: 640px) {
+  .chart-wrapper {
+    height: 280px;
+  }
+}
+
+/* 공통 버튼 */
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border-radius: var(--radius-md);
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.btn-primary {
+  background: var(--brand-secondary);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: var(--brand-hover);
+  text-decoration: none;
+}
+
+.btn-outline {
+  background: #ffffff;
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.btn-outline:hover {
+  border-color: var(--brand-secondary);
+  color: var(--brand-secondary);
+  text-decoration: none;
+}
+
+/* CLS 방지 광고 슬롯 컨테이너 (width:100%; box-sizing:border-box 준수) */
+.ad-slot-container {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 100px;
+  margin: 24px 0;
+  padding: 8px;
+  border-radius: var(--radius-md);
+  background: #eef2f6;
+  border: 1px dashed var(--border-strong);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.ad-slot-container.ad-rect {
+  min-height: 260px;
+}
+
+.ad-slot-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+/* 데이터 테이블 (매트릭스 · 백분위수 표) */
+.data-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.data-table th,
+.data-table td {
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--border-light);
+  text-align: right;
+}
+
+.data-table th:first-child,
+.data-table td:first-child {
+  text-align: left;
+}
+
+.data-table thead th {
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  font-weight: 700;
+}
+
+/* 하단 퍼블리셔 해설 레이어 & 푸터 */
+.publisher-guide {
+  margin-top: 40px;
+}
+
+.publisher-guide h2 {
+  font-size: 1.35rem;
+  margin: 28px 0 12px;
+  color: var(--text-primary);
+}
+
+.publisher-guide h3 {
+  font-size: 1.1rem;
+  margin: 20px 0 8px;
+  color: var(--brand-primary);
+}
+
+.publisher-guide p,
+.publisher-guide li {
+  color: var(--text-secondary);
+  font-size: 0.96rem;
+  line-height: 1.75;
+}
+
+.site-footer {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-light);
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* 인쇄 및 PDF 출력 시 광고·불필요 버튼 숨김 */
+@media print {
+  .ad-slot-container,
+  .preset-bar,
+  .btn-row,
+  .site-footer {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff;
+  }
+
+  .card {
+    box-shadow: none;
+    border: 1px solid #cbd5e1;
+  }
+}
+
+/* AdSense Clean Transparent Shield */
+.manual-ad-box {
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 1080px;
+  margin: 18px auto;
+  background: transparent;
+  border: none;
+  text-align: center;
+  overflow: hidden;
+}
+.manual-ad-box ins {
+  max-width: 100% !important;
+}

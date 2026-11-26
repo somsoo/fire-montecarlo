@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>파이어족 몬테카를로 은퇴 생존확률 시뮬레이터</title>
+    <link>https://fire-montecarlo.enjoy-onepage.com/</link>
+    <description>박스-뮬러 정규분포 2,000회·10,000회 몬테카를로 은퇴 생존확률 및 폭락장 스트레스 테스트 시뮬레이터</description>
+    <language>ko-KR</language>
+    <lastBuildDate>Thu, 26 Nov 2026 12:20:00 +0900</lastBuildDate>
+    <atom:link href="https://fire-montecarlo.enjoy-onepage.com/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>파이어족 몬테카를로 은퇴 생존확률 시뮬레이터</title>
+      <link>https://fire-montecarlo.enjoy-onepage.com/</link>
+      <guid isPermaLink="true">https://fire-montecarlo.enjoy-onepage.com/</guid>
+      <description>박스-뮬러 2,000회 몬테카를로 시뮬레이션으로 목표 은퇴 나이부터 기대수명까지의 자산 생존확률과 폭락장 위험을 즉시 계산합니다.</description>
+      <pubDate>Thu, 26 Nov 2026 12:00:00 +0900</pubDate>
+    </item>
+    <item>
+      <title>10,000회 FIRE 은퇴 폭락장 스트레스 테스트 및 PDF 진단서</title>
+      <link>https://fire-montecarlo.enjoy-onepage.com/stress-test/</link>
+      <guid isPermaLink="true">https://fire-montecarlo.enjoy-onepage.com/stress-test/</guid>
+      <description>은퇴 직후 대폭락(-30%/-40%)과 연 5% 고물가 복합 위기 매트릭스 및 안전 인출률(3.0%~5.0%) 생존곡선 정밀 분석</description>
+      <pubDate>Thu, 26 Nov 2026 12:05:00 +0900</pubDate>
+    </item>
+    <item>
+      <title>서비스 소개 및 문의 | FIRE 은퇴 시뮬레이터</title>
+      <link>https://fire-montecarlo.enjoy-onepage.com/about.html</link>
+      <guid isPermaLink="true">https://fire-montecarlo.enjoy-onepage.com/about.html</guid>
+      <description>파이어족 몬테카를로 은퇴 생존확률 시뮬레이터의 박스-뮬러 수학 원리와 문의 안내 페이지입니다.</description>
+      <pubDate>Thu, 26 Nov 2026 12:10:00 +0900</pubDate>
+    </item>
+  </channel>
+</rss>

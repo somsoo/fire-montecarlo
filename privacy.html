@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow" />
+  <title>개인정보처리방침 | FIRE 은퇴 시뮬레이터</title>
+  <meta name="description" content="100% 브라우저 로컬 연산 원칙 및 쿠키·광고 설정에 관한 개인정보처리방침 안내입니다." />
+  <link rel="canonical" href="https://fire-montecarlo.enjoy-onepage.com/privacy.html" />
+  <link rel="icon" href="./favicon.ico" type="image/x-icon" />
+  <link rel="stylesheet" href="./css/common.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <div>
+        <h1 class="site-title">개인정보처리방침</h1>
+        <p class="site-subtitle">파이어족(FIRE) 몬테카를로 은퇴 생존확률 시뮬레이터</p>
+      </div>
+      <a href="./" class="btn btn-outline" style="background:rgba(255,255,255,0.12);color:#ffffff;border-color:rgba(255,255,255,0.28);">
+        &larr; 시뮬레이터로 돌아가기
+      </a>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <article class="card publisher-guide" style="margin-top:0;">
+      <h2 style="margin-top:0;">1. 개인정보 수집 및 서버 전송 여부</h2>
+      <p>
+        본 서비스(파이어족 몬테카를로 은퇴 생존확률 시뮬레이터)는 회원가입 절차 없이 무료로 이용할 수 있는 정적 웹 도구입니다.
+        사용자가 화면에 입력하는 순자산, 월 저축액, 연령, 월 생활비, 추가 고정수입, 수익률 등 모든 시뮬레이션 입력값은
+        <strong>외부 서버나 데이터베이스로 전송·저장되지 않으며 오직 사용자 기기의 웹 브라우저 내부에서만 로컬로 연산</strong>됩니다.
+      </p>
+
+      <h2>2. 브라우저 로컬 저장소(localStorage · sessionStorage) 및 URL 해시 안내</h2>
+      <ul>
+        <li>
+          <strong>로컬 저장소(localStorage)</strong>: 재방문 또는 심화 스트레스 테스트 페이지 이동 시 입력값을 다시 적는 번거로움을 줄이기 위해
+          사용자 브라우저의 <code>localStorage</code>(키 이름: <code>kr_fire_mc_state_v1</code>)에 최근 입력 조건을 임시 보관합니다.
+          브라우저 인터넷 사용 기록(사이트 데이터)을 삭제하거나 화면의 ‘초기화’ 버튼을 누르면 언제든 초기 상태로 되돌릴 수 있습니다.
+        </li>
+        <li>
+          <strong>세션 저장소(sessionStorage)</strong>: 심화 리포트 열람 상태를 현재 브라우저 탭 세션 동안 유지하기 위해
+          <code>sessionStorage</code> 플래그만 사용하며 탭 종료 시 자동으로 소멸합니다.
+        </li>
+        <li>
+          <strong>공유 링크(URL 해시)</strong>: 사용자가 직접 ‘링크 복사’ 또는 ‘공유’ 버튼을 눌렀을 때만 입력 파라미터가 주소 뒷부분 해시(<code>#s=...</code>) 문자열로 인코딩됩니다.
+          ‘자산 총액 숨김’ 옵션을 활성화하면 실제 순자산 및 생활비 금액은 공유 해시에서도 제외됩니다.
+        </li>
+      </ul>
+
+      <h2>3. 쿠키(Cookie) 및 제3자 광고 서비스 안내</h2>
+      <p>
+        본 사이트는 서비스 운영 및 무료 유지를 위해 Google AdSense 등 제3자 광고 플랫폼을 사용할 수 있습니다.
+      </p>
+      <ul>
+        <li>Google을 포함한 제3자 광고 사업자는 사용자의 본 사이트 및 타 사이트 방문 기록을 바탕으로 맞춤형 광고를 제공하기 위해 쿠키(광고 식별자)를 사용할 수 있습니다.</li>
+        <li>사용자는 브라우저 설정을 통해 쿠키 저장을 거부하거나 삭제할 수 있으며, <a href="https://adssettings.google.com/" target="_blank" rel="noopener noreferrer">Google 광고 설정</a> 페이지에서 개인 맞춤형 광고 노출을 직접 해제할 수 있습니다.</li>
+      </ul>
+
+      <h2>4. 외부 라이브러리 및 공유 연동</h2>
+      <p>
+        차트 시각화(Chart.js), PDF 문서 생성(jsPDF), 카카오톡 메시지 공유(Kakao JavaScript SDK) 기능을 실행할 때
+        해당 공식 콘텐츠 전송 네트워크(CDN)로 스크립트 요청이 발생할 수 있으나, 사용자의 시뮬레이션 자산 원본 데이터를 별도 수집 서버로 업로드하지 않습니다.
+      </p>
+
+      <h2>5. 방침 변경 및 문의</h2>
+      <p>
+        본 개인정보처리방침의 내용이 기능 변경 등으로 수정될 경우 본 페이지를 통해 고지합니다.
+        서비스 관련 문의 사항은 <a href="./about.html">서비스 소개 및 문의</a> 페이지의 안내 채널을 이용해 주시기 바랍니다.
+      </p>
+    </article>
+
+    <footer class="site-footer">
+      <div>파이어족(FIRE) 몬테카를로 은퇴 생존확률 시뮬레이터</div>
+      <nav class="footer-links" aria-label="하단 정책 안내">
+        <a href="./">메인 시뮬레이터</a>
+        <a href="./about.html">서비스 소개 및 문의</a>
+        <a href="./terms.html">이용약관 및 면책공고</a>
+      </nav>
+    </footer>
+  </main>
+</body>
+</html>
